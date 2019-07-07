@@ -5,8 +5,22 @@ expressSanitizer = require("express-sanitizer"),
 methodOverride = require("method-override"),
 mongoose = require("mongoose");
 
+// configure dotenv
+require('dotenv').config();
 //APP CONFIG
-mongoose.connect("mongodb://localhost:27017/restful_blog_app", { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI, {
+        useNewUrlParser: true,
+        useCreateIndex: true
+}).then(() => {
+    console.log("Connected to DB!");
+}).catch(err => {
+    console.log("ERROR", err.message);
+});
+
+
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -109,7 +123,7 @@ app.delete("/blogs/:id", (req, res)=>{
     });
     // redirect
 });
-const PORT = process.env.PORT || 3000;
+//const PORT = process.env.PORT || 3000;
 app.listen(PORT, function(){
     console.log("Server is running!");
 });
